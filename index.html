@@ -376,8 +376,8 @@
 
       // ── Read URL params ──
       const params  = new URLSearchParams(window.location.search);
-      const subject = params.get('subjectid') || '';
-      const detail  = params.get('detailpath') || '';
+      const subject = params.get('subjectId') || params.get('subjectid') || '';
+      const detail  = params.get('detailPath') || params.get('detailpath') || '';
 
       const ring    = document.getElementById('ringEl');
       const numEl   = document.getElementById('timerNum');
@@ -411,7 +411,7 @@
       // ── Deep link on click ──
       btn.addEventListener('click', () => {
         if (btn.disabled) return;
-        const deeplink = `dorebox://unlock?subjectId=${encodeURIComponent(subject)}&detailPath=${encodeURIComponent(detail)}`;
+        const deeplink = `dorebox://unlock?subjectid=${encodeURIComponent(subject)}&detailpath=${encodeURIComponent(detail)}`;
         window.location.href = deeplink;
       });
     })();
