@@ -369,50 +369,62 @@
     <a href="/terms.html">Terms of Use</a>
   </footer>
 
-  <script>
+ <script>
     (function () {
       const TOTAL = 30;
-      const circumference = 2 * Math.PI * 57; // 358.09…
-
+      const circumference = 2 * Math.PI * 57;
+  
       // ── Read URL params ──
       const params  = new URLSearchParams(window.location.search);
       const subject = params.get('subjectId') || params.get('subjectid') || '';
       const detail  = params.get('detailPath') || params.get('detailpath') || '';
-
+      const token   = params.get('token') || '';   // optional (new version)
+      const ts      = params.get('ts') || '';      // optional (new version)
+  
       const ring    = document.getElementById('ringEl');
       const numEl   = document.getElementById('timerNum');
       const btn     = document.getElementById('continueBtn');
       const hint    = document.getElementById('waitHint');
-
+  
       ring.style.strokeDasharray  = circumference;
       ring.style.strokeDashoffset = 0;
-
+  
       let remaining = TOTAL;
-
+  
       const tick = setInterval(() => {
         remaining--;
         numEl.textContent = remaining;
-
-        // progress ring drains as time passes
+  
         const progress = remaining / TOTAL;
         ring.style.strokeDashoffset = circumference * (1 - progress);
-
+  
         if (remaining <= 0) {
           clearInterval(tick);
           numEl.textContent = '✓';
           document.querySelector('.timer-label').textContent = 'done';
-
-          btn.disabled        = false;
-          btn.textContent     = 'Continue to App →';
-          hint.textContent    = 'Tap to open your content in DoreBox';
+  
+          btn.disabled     = false;
+          btn.textContent  = 'Continue to App →';
+          hint.textContent = 'Tap to open your content in DoreBox';
         }
       }, 1000);
-
-      // ── Deep link on click ──
+  
+      // ── Build deep link (old + new format) ──
+      function buildDeepLink() {
+        let link = 'dorebox://unlock'
+          + '?subjectId='  + encodeURIComponent(subject)
+          + '&detailPath=' + encodeURIComponent(detail);
+  
+        // token / ts sirf tab add honge jab URL me aaye hon
+        if (token) link += '&token=' + encodeURIComponent(token);
+        if (ts)    link += '&ts='    + encodeURIComponent(ts);
+  
+        return link;
+      }
+  
       btn.addEventListener('click', () => {
         if (btn.disabled) return;
-        const deeplink = `dorebox://unlock?subjectId=${encodeURIComponent(subject)}&detailPath=${encodeURIComponent(detail)}`;
-        window.location.href = deeplink;
+        window.location.href = buildDeepLink();
       });
     })();
   </script>
